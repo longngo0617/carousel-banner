@@ -5,9 +5,10 @@ import { Dots } from "./Dots";
 
 interface SliderProps {
   dots?: boolean;
+  arrow?:boolean;
 }
 
-export const Slider: React.FC<SliderProps> = ({ dots = true }) => {
+export const Slider: React.FC<SliderProps> = ({ dots = true,arrow = true }) => {
   const [current, setCurrent] = React.useState(0);
   const [numOfSlides, setNumOfSlides] = React.useState(3);
   const [input, setInput] = React.useState("");
@@ -44,7 +45,7 @@ export const Slider: React.FC<SliderProps> = ({ dots = true }) => {
         <ButtonEnter onClick={handleClick}>Enter</ButtonEnter>
       </InputWrap>
       <SliderContainer>
-        {numOfSlides > 1 && <ButtonLeft onClick={prevSlide} />}
+        {arrow && <ButtonLeft onClick={prevSlide} />}
         <CarouselContainer>
           <CarouselSlide
             style={{ transform: `translateX(-${current * 100}%)` }}
@@ -56,7 +57,7 @@ export const Slider: React.FC<SliderProps> = ({ dots = true }) => {
             ))}
           </CarouselSlide>
         </CarouselContainer>
-        {numOfSlides > 1 && <ButtonRight onClick={nextSlide} />}
+        {arrow && <ButtonRight onClick={nextSlide} />}
       </SliderContainer>
       {dots && numOfSlides > 1 && (
         <Dots
