@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { BannerData } from "../BannerData";
 import { Dots } from "./Dots";
 
 interface SliderProps {
@@ -9,15 +8,16 @@ interface SliderProps {
 }
 
 export const Slider: React.FC<SliderProps> = ({ dots = true,arrow = true }) => {
-  const [current, setCurrent] = React.useState(0);
-  const [numOfSlides, setNumOfSlides] = React.useState(3);
+  const [current, setCurrent] = React.useState(0); // use import React, { useState } from "react";, save us from repeat `React.` all the time
+  const [numOfSlides, setNumOfSlides] = React.useState(3); // should not have magic number of `3`
+  // Q: use a list of images instead
   const [input, setInput] = React.useState("");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.validity.valid ? e.target.value : input;
-    setInput(value);
+    setInput(value); // should update the `input` when valid only
   };
   const handleClick = () => {
-    if(parseInt(input) < 3) {
+    if(parseInt(input) < 3) { // repeat of parseInt, magic number of `3`
       return;
     }
     setNumOfSlides(parseInt(input));
@@ -51,7 +51,8 @@ export const Slider: React.FC<SliderProps> = ({ dots = true,arrow = true }) => {
             style={{ transform: `translateX(-${current * 100}%)` }}
           >
             {[...Array(numOfSlides)].map((banner, index) => (
-              <Banner key={index}>
+              // should not use index for key
+              <Banner key={index}> 
                 <TextBanner>Banner {index}</TextBanner>
               </Banner>
             ))}
@@ -70,6 +71,7 @@ export const Slider: React.FC<SliderProps> = ({ dots = true,arrow = true }) => {
   );
 };
 
+// Q: What is the downside of `styled-components`?
 const SliderWrap = styled.div`
   width: 100%;
 `;
@@ -89,6 +91,7 @@ const Button = styled.div`
   user-select: none;
 `;
 
+// Q: Could you remove the glitch when click the button on mobile
 const ButtonRight = styled(Button)`
   width: 0;
   height: 0;
