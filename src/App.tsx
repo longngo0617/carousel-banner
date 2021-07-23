@@ -6,7 +6,7 @@ import { Slider } from './components/Slider';
 function App() {
   return (
     <div className="App">
-      <Slider/>
+      <Slider height={"300px"} width={"50%"}/>
     </div>
   );
 }

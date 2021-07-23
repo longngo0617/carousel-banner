@@ -1,14 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-import { BannerData } from "../BannerData";
 import { Dots } from "./Dots";
 
 interface SliderProps {
   dots?: boolean;
   arrow?:boolean;
+  width:string;
+  height:string;
 }
 
-export const Slider: React.FC<SliderProps> = ({ dots = true,arrow = true }) => {
+export const Slider: React.FC<SliderProps> = ({ dots = true,arrow = true,height,width }) => {
   const [current, setCurrent] = React.useState(0);
   const [numOfSlides, setNumOfSlides] = React.useState(3);
   const [input, setInput] = React.useState("");
@@ -46,7 +47,7 @@ export const Slider: React.FC<SliderProps> = ({ dots = true,arrow = true }) => {
       </InputWrap>
       <SliderContainer>
         {arrow && <ButtonLeft onClick={prevSlide} />}
-        <CarouselContainer>
+        <CarouselContainer width={width} height={height}>
           <CarouselSlide
             style={{ transform: `translateX(-${current * 100}%)` }}
           >
@@ -109,12 +110,13 @@ const CarouselContainer = styled.div`
   margin: 0 40px;
   overflow: hidden;
   border: 2px solid black;
-  width: 50%;
-`;
+  width: ${(props : any) => (props.width && `${props.width}`)};
+  height:${(props : any) => (props.height && `${props.height}`)};
+` as any;
 
 const CarouselSlide = styled.div`
   width: 100%;
-  height: 300px;
+  height: 100%;
   white-space: nowrap;
   transition: transform 0.3s;
 `;
