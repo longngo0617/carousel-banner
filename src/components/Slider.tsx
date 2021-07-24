@@ -1,28 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Dots } from "./Dots";
 
 interface SliderProps {
   dots?: boolean;
-  arrow?:boolean;
-  width:string;
-  height:string;
+  arrow?: boolean;
+  width: string;
+  height: string;
+  slides: any;
+  infiniteLoop: boolean;
 }
 
-export const Slider: React.FC<SliderProps> = ({ dots = true,arrow = true,height,width }) => {
-  const [current, setCurrent] = React.useState(0);
-  const [numOfSlides, setNumOfSlides] = React.useState(3);
-  const [input, setInput] = React.useState("");
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.validity.valid ? e.target.value : input;
-    setInput(value);
-  };
-  const handleClick = () => {
-    if(parseInt(input) < 3) {
-      return;
-    }
-    setNumOfSlides(parseInt(input));
-  };
+export const Slider: React.FC<SliderProps> = ({
+  dots = true,
+  arrow = true,
+  height,
+  width,
+  slides,
+  infiniteLoop,
+}) => {
+  const [current, setCurrent] = useState(0);
+  const [numOfSlides, setNumOfSlides] = useState(slides.length);
+  const [transitionEnabled, setTransitionEnabled] = useState(true);
+  const [isRepeating, setIsRepeating] = useState(
+    infiniteLoop && slides.length > 1
+  );
+  // const [length, setLength] = useState(slides.length);
+
+  // const handleTransitionEnd = () => {
+  //   if (isRepeating) {
+  //     if (current === 0) {
+  //       setTransitionEnabled(false);
+  //       setCurrent(length);
+  //     } else if (current === length + 1) {
+  //       setTransitionEnabled(false);
+  //       setCurrent(1);
+  //     }
+  //   }
+  // };
 
   const prevSlide = () => {
     setCurrent(current === 0 ? numOfSlides - 1 : current - 1);
@@ -32,28 +47,22 @@ export const Slider: React.FC<SliderProps> = ({ dots = true,arrow = true,height,
     setCurrent(current === numOfSlides - 1 ? 0 : current + 1);
   };
 
+  // const crLastIndex = current === numOfSlides;
+
   return (
     <SliderWrap>
-      <InputWrap>
-        <Input
-          type="text"
-          pattern="[0-9]*"
-          name="num"
-          placeholder="Enter the number of images"
-          value={input}
-          onChange={handleChange}
-        />
-        <ButtonEnter onClick={handleClick}>Enter</ButtonEnter>
-      </InputWrap>
       <SliderContainer>
         {arrow && <ButtonLeft onClick={prevSlide} />}
         <CarouselContainer width={width} height={height}>
           <CarouselSlide
-            style={{ transform: `translateX(-${current * 100}%)` }}
+            style={{
+              transform: `translateX(-${current * 100}%)`,
+              transition: !transitionEnabled ? "none" : undefined,
+            }}
           >
-            {[...Array(numOfSlides)].map((banner, index) => (
-              <Banner key={index}>
-                <TextBanner>Banner {index}</TextBanner>
+            {slides.map((banner: any, index: any) => (
+              <Banner key={index} background={banner.img}>
+                <TextBanner>{banner.text}</TextBanner>
               </Banner>
             ))}
           </CarouselSlide>
@@ -110,8 +119,8 @@ const CarouselContainer = styled.div`
   margin: 0 40px;
   overflow: hidden;
   border: 2px solid black;
-  width: ${(props : any) => (props.width && `${props.width}`)};
-  height:${(props : any) => (props.height && `${props.height}`)};
+  width: ${(props: any) => props.width && `${props.width}`};
+  height: ${(props: any) => props.height && `${props.height}`};
 ` as any;
 
 const CarouselSlide = styled.div`
@@ -127,8 +136,8 @@ const Banner = styled.div`
   justify-content: center;
   height: 100%;
   width: 100%;
-  background-color: #cfe2f3;
-`;
+  background: url(${(props: any) => props.background && `${props.background}`});
+` as any;
 
 const TextBanner = styled.div`
   display: flex;
@@ -144,9 +153,9 @@ const InputWrap = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   @media (max-width: 600px) {
-    flex-direction:column;
+    flex-direction: column;
   }
 `;
 const Input = styled.input`
@@ -163,6 +172,6 @@ const ButtonEnter = styled(Button)`
   justify-content: center;
   margin-left: 10px;
   @media (max-width: 600px) {
-    margin:10px 0;
+    margin: 10px 0;
   }
 `;
